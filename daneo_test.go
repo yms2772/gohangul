@@ -23,6 +23,10 @@ func TestDaneo_At(t *testing.T) {
 			t.Errorf("Daneo.At() = %v, want %v", got, w)
 		}
 	}
+
+	if got := input.At(3); !got.Choseong.Empty() || !got.Jungseong.Empty() || !got.Jongseong.Empty() {
+		t.Errorf("Daneo.At() = %v, want empty", got)
+	}
 }
 
 func TestDaneo_Each(t *testing.T) {
@@ -40,10 +44,18 @@ func TestDaneo_Each(t *testing.T) {
 }
 
 func TestDaneo_Equals(t *testing.T) {
-	input := Disassemble("안녕")
+	input := []Daneo{
+		Disassemble("안녕"),
+		Disassemble("안냥"),
+		Disassemble("안녕하세요"),
+	}
+	target := Disassemble("안녕")
+	want := []bool{true, false, false}
 
-	if got := input.Equals(Disassemble("안녕")); got != true {
-		t.Errorf("Daneo.Equals() = %v, want %v", got, true)
+	for i, item := range input {
+		if got := item.Equals(target); got != want[i] {
+			t.Errorf("Daneo.Equals() = %v, want %v", got, want[i])
+		}
 	}
 }
 

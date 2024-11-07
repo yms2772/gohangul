@@ -44,32 +44,75 @@ func TestDisassemble(t *testing.T) {
 }
 
 func TestJosaPick(t *testing.T) {
-	input := []string{"사과", "귤", "바나나", "멜론", "딸기"}
-	want := []string{"는", "은", "는", "은", "는"}
+	tests := []struct {
+		word     string
+		josaType string
+		expected string
+	}{
+		// "사과"는 종성이 없는 단어
+		{"사과", "이/가", "가"},
+		{"사과", "을/를", "를"},
+		{"사과", "은/는", "는"},
+		{"사과", "으로/로", "로"},
+		{"사과", "와/과", "와"},
+		{"사과", "이나/나", "나"},
+		{"사과", "이란/란", "란"},
+		{"사과", "아/야", "야"},
+		{"사과", "이랑/랑", "랑"},
+		{"사과", "이에요/예요", "예요"},
+		{"사과", "으로서/로서", "로서"},
+		{"사과", "으로써/로써", "로써"},
+		{"사과", "으로부터/로부터", "로부터"},
+		{"사과", "이라/라", "라"},
 
-	for i, v := range input {
-		output := JosaPick(v, "은/는")
-		if output != want[i] {
-			t.Errorf("JosaPick(%q) = %q; want %q", v, output, want[i])
+		// "귤"은 종성이 있는 단어
+		{"귤", "이/가", "이"},
+		{"귤", "을/를", "을"},
+		{"귤", "은/는", "은"},
+		{"귤", "으로/로", "으로"},
+		{"귤", "와/과", "과"},
+		{"귤", "이나/나", "이나"},
+		{"귤", "이란/란", "이란"},
+		{"귤", "아/야", "아"},
+		{"귤", "이랑/랑", "이랑"},
+		{"귤", "이에요/예요", "이에요"},
+		{"귤", "으로서/로서", "으로서"},
+		{"귤", "으로써/로써", "으로써"},
+		{"귤", "으로부터/로부터", "으로부터"},
+		{"귤", "이라/라", "이라"},
+	}
+
+	for _, test := range tests {
+		result := JosaPick(test.word, test.josaType)
+		if result != test.expected {
+			t.Errorf("JosaPick(%q, %q) = %q; want %q", test.word, test.josaType, result, test.expected)
 		}
 	}
 }
 
 func TestJosa(t *testing.T) {
-	input := []string{"사과", "귤", "바나나", "멜론", "딸기"}
-	want := []string{"사과는", "귤은", "바나나는", "멜론은", "딸기는"}
+	tests := []struct {
+		word     string
+		josaType string
+		expected string
+	}{
+		{"사과", "이/가", "사과가"},
+		{"귤", "이/가", "귤이"},
+		{"사과", "을/를", "사과를"},
+		{"귤", "을/를", "귤을"},
+	}
 
-	for i, v := range input {
-		output := Josa(v, "은/는")
-		if output != want[i] {
-			t.Errorf("Josa(%q) = %q; want %q", v, output, want[i])
+	for _, test := range tests {
+		result := Josa(test.word, test.josaType)
+		if result != test.expected {
+			t.Errorf("Josa(%q, %q) = %q; want %q", test.word, test.josaType, result, test.expected)
 		}
 	}
 }
 
 func TestCanBeChoseong(t *testing.T) {
-	input := []string{"ㄱ", "ㅎ", "ㅃ", "ㄱㄱ", "ㅘ", "ㅜ"}
-	want := []bool{true, true, true, false, false, false}
+	input := []string{"", "ㄱ", "ㅎ", "ㅃ", "ㄱㄱ", "ㅘ", "ㅜ"}
+	want := []bool{false, true, true, true, false, false, false}
 
 	for i, v := range input {
 		output := CanBeChoseong(v)
@@ -80,8 +123,8 @@ func TestCanBeChoseong(t *testing.T) {
 }
 
 func TestCanBeJungseong(t *testing.T) {
-	input := []string{"ㄱ", "ㅃ", "ㄱㄱ", "ㅗ", "ㅘ", "ㅡㅣ"}
-	want := []bool{false, false, false, true, true, true}
+	input := []string{"", "ㄱ", "ㅃ", "ㄱㄱ", "ㅗ", "ㅘ", "ㅡㅣ", "ㅡㅣㅑ"}
+	want := []bool{false, false, false, false, true, true, true, false}
 
 	for i, v := range input {
 		output := CanBeJungseong(v)
@@ -92,8 +135,8 @@ func TestCanBeJungseong(t *testing.T) {
 }
 
 func TestCanBeJongseong(t *testing.T) {
-	input := []string{"ㄱ", "ㅎ", "ㅃ", "ㄱㄱ", "ㅅㅅ", "ㅘ", "ㅜ"}
-	want := []bool{true, true, false, true, true, false, false}
+	input := []string{"", "ㄱ", "ㅎ", "ㅃ", "ㄱㄱ", "ㅅㅅ", "ㅘ", "ㅜ", "ㅂㅂㅂ"}
+	want := []bool{false, true, true, false, true, true, false, false, false}
 
 	for i, v := range input {
 		output := CanBeJongseong(v)
@@ -104,8 +147,18 @@ func TestCanBeJongseong(t *testing.T) {
 }
 
 func TestCombineCharacter(t *testing.T) {
-	input := [][3]string{{"ㄱ", "ㅏ", "ㅆ"}, {"ㅇ", "ㅡㅣ"}, {"ㅃ", "ㅜㅓ", "ㄹㄱ"}}
-	want := []string{"갔", "의", "뿱"}
+	input := [][3]string{{"ㅇ", "ㅡㅣ"}, {"ㄱ", "ㅏ"}}
+	want := []string{"의", "가"}
+
+	for i, v := range input {
+		output := CombineCharacter(v[0], v[1])
+		if output != want[i] {
+			t.Errorf("CombineCharacter(%q) = %q; want %q", v, output, want[i])
+		}
+	}
+
+	input = [][3]string{{"ㄱ", "ㅏ", "ㅆ"}, {"ㅃ", "ㅜㅓ", "ㄹㄱ"}}
+	want = []string{"갔", "뿱"}
 
 	for i, v := range input {
 		output := CombineCharacter(v[0], v[1], v[2])
@@ -116,8 +169,8 @@ func TestCombineCharacter(t *testing.T) {
 }
 
 func TestCombineVowels(t *testing.T) {
-	input := [][]string{{"ㅡ", "ㅣ"}, {"ㅜ", "ㅓ"}, {"ㅗ", "ㅏ"}}
-	want := []string{"ㅢ", "ㅝ", "ㅘ"}
+	input := [][]string{{"ㅏ", "ㅓ"}, {"ㅡ", "ㅣ"}, {"ㅜ", "ㅓ"}, {"ㅗ", "ㅏ"}}
+	want := []string{"ㅏㅓ", "ㅢ", "ㅝ", "ㅘ"}
 
 	for i, v := range input {
 		output := CombineVowels(v[0], v[1])
@@ -128,8 +181,8 @@ func TestCombineVowels(t *testing.T) {
 }
 
 func TestDays(t *testing.T) {
-	input := []int{14, 2, 29}
-	want := []string{"열나흘", "이틀", "스무아흐레"}
+	input := []int{14, 2, 29, 100}
+	want := []string{"열나흘", "이틀", "스무아흐레", ""}
 
 	for i, v := range input {
 		output := Days(v)
@@ -152,8 +205,8 @@ func TestGetChoseong(t *testing.T) {
 }
 
 func TestHasBatchim(t *testing.T) {
-	input := []string{"감", "갃", "강", "가"}
-	want := []bool{true, true, true, false}
+	input := []string{".", "감", "갃", "강", "가"}
+	want := []bool{false, true, true, true, false}
 
 	for i, v := range input {
 		output := HasBatchim(v)
@@ -161,11 +214,21 @@ func TestHasBatchim(t *testing.T) {
 			t.Errorf("HasBatchim(%q) = %t; want %t", v, output, want[i])
 		}
 	}
+
+	input = []string{"갂", "가", "각", "갔"}
+	want = []bool{true, false, false, true}
+
+	for i, v := range input {
+		output := HasBatchim(v, true)
+		if output != want[i] {
+			t.Errorf("HasBatchim(%q) = %t; want %t", v, output, want[i])
+		}
+	}
 }
 
 func TestNumberToHangul(t *testing.T) {
-	input := []string{"0123456", "7890", "1000000", "1000000.1023", "102001030"}
-	want := []string{"일십이만삼천사백오십육", "칠천팔백구십", "일백만", "일백만점일영이삼", "일억이백만일천삼십"}
+	input := []string{"", "12", "0123456", "7890", "1000000", "1000000.1023", "102001030"}
+	want := []string{"", "일십이", "일십이만삼천사백오십육", "칠천팔백구십", "일백만", "일백만점일영이삼", "일억이백만일천삼십"}
 
 	for i, v := range input {
 		output := NumberToHangul(v)
@@ -176,8 +239,8 @@ func TestNumberToHangul(t *testing.T) {
 }
 
 func TestRomanize(t *testing.T) {
-	input := []string{"안녕하세요", "반갑습니다", "한글로", "로마자로"}
-	want := []string{"annyeonghaseyo", "bangapseupnida", "hangeulro", "romajaro"}
+	input := []string{"", "안녕하세요", "반갑습니다", "한글로", "로마자로"}
+	want := []string{"", "annyeonghaseyo", "bangapseupnida", "hangeulro", "romajaro"}
 
 	for i, v := range input {
 		output := Romanize(v)

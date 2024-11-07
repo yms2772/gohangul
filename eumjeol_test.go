@@ -19,10 +19,16 @@ func TestEumjeol_Equals(t *testing.T) {
 }
 
 func TestEumjeol_String(t *testing.T) {
-	input := Eumjeol{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄴ')}
-	want := "안"
+	input := []Eumjeol{
+		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄴ')},
+		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄴ').toChoseong()},
+		{},
+	}
+	want := []string{"안", "안", ""}
 
-	if got := input.String(); got != want {
-		t.Errorf("Eumjeol.String() = %v, want %v", got, want)
+	for i, e := range input {
+		if got := e.String(); got != want[i] {
+			t.Errorf("Eumjeol.String() = %v, want %v", got, want[i])
+		}
 	}
 }
