@@ -437,9 +437,6 @@ func NumberToHangul(number string) string {
 	}
 
 	fields := strings.Split(sb.String(), ".")
-	if len(fields) == 0 {
-		return ""
-	}
 
 	sb.Reset()
 
