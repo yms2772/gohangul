@@ -226,8 +226,8 @@ var (
 
 	// 복합 초성 -> 종성
 	complexJongseongMap = map[string]Jamo{
-		"ㄱㅅ": 0x11AA, // ㄳ
 		"ㄱㄱ": 0x11A9, // ㄲ
+		"ㄱㅅ": 0x11AA, // ㄳ
 		"ㄴㅈ": 0x11AD, // ㄵ
 		"ㄴㅎ": 0x11AE, // ㄶ
 		"ㄹㄱ": 0x11B0, // ㄺ
@@ -243,8 +243,8 @@ var (
 
 	// 복합 종성 -> 초성
 	complexJongseongReversedMap = map[Jamo]string{
-		0x11AA: "ㄱㅅ", // ㄳ
 		0x11A9: "ㄱㄱ", // ㄲ
+		0x11AA: "ㄱㅅ", // ㄳ
 		0x11AD: "ㄴㅈ", // ㄵ
 		0x11AE: "ㄴㅎ", // ㄶ
 		0x11B0: "ㄹㄱ", // ㄺ
@@ -260,6 +260,7 @@ var (
 
 	// 복합 받침
 	doubleBatchim = map[rune]bool{
+		2:  true, // ㄲ
 		3:  true, // ㄳ
 		5:  true, // ㄵ
 		6:  true, // ㄶ
@@ -271,6 +272,7 @@ var (
 		14: true, // ㄿ
 		15: true, // ㅀ
 		18: true, // ㅄ
+		20: true, // ㅆ
 	}
 
 	// 초성 로마자
@@ -752,8 +754,6 @@ func Disassemble(str string) Daneo {
 			j := Jamo(ch).toHangulChoseongSios()
 			if j >= baseJungseong && j <= baseJungseong+numJungseong {
 				eumjeol.Jungseong = j
-			} else if j >= baseJongseong && j <= baseJongseong+numJongseong {
-				eumjeol.Jongseong = j
 			} else {
 				eumjeol.Choseong = j
 			}
