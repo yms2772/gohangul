@@ -1,3 +1,6 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/yms2772/gohangul.svg)](https://pkg.go.dev/github.com/yms2772/gohangul)
+[![codecov](https://codecov.io/github/yms2772/gohangul/graph/badge.svg?token=NALASBSYU3)](https://codecov.io/github/yms2772/gohangul)
+
 # gohangul
 gohangul은 한글을 처리하는 Go 패키지입니다.
 
