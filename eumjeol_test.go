@@ -21,10 +21,10 @@ func TestEumjeol_Equals(t *testing.T) {
 func TestEumjeol_String(t *testing.T) {
 	input := []Eumjeol{
 		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄴ')},
-		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄴ').toChoseong()},
+		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄲ').toHangulChoseongSios()},
 		{},
 	}
-	want := []string{"안", "안", ""}
+	want := []string{"안", "앆", ""}
 
 	for i, e := range input {
 		if got := e.String(); got != want[i] {
