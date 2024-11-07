@@ -224,6 +224,16 @@ func TestHasBatchim(t *testing.T) {
 			t.Errorf("HasBatchim(%q) = %t; want %t", v, output, want[i])
 		}
 	}
+
+	input = []string{"갂", "가", "각", "갔"}
+	want = []bool{false, false, true, false}
+
+	for i, v := range input {
+		output := HasBatchim(v, false)
+		if output != want[i] {
+			t.Errorf("HasBatchim(%q) = %t; want %t", v, output, want[i])
+		}
+	}
 }
 
 func TestNumberToHangul(t *testing.T) {
