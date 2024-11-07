@@ -64,6 +64,7 @@ func TestJosaPick(t *testing.T) {
 		{"사과", "으로써/로써", "로써"},
 		{"사과", "으로부터/로부터", "로부터"},
 		{"사과", "이라/라", "라"},
+		{"사과", "?/?", "?/?"},
 
 		// "귤"은 종성이 있는 단어
 		{"귤", "이/가", "이"},
@@ -80,6 +81,7 @@ func TestJosaPick(t *testing.T) {
 		{"귤", "으로써/로써", "으로써"},
 		{"귤", "으로부터/로부터", "으로부터"},
 		{"귤", "이라/라", "이라"},
+		{"귤", "?/?", "?/?"},
 	}
 
 	for _, test := range tests {
@@ -261,8 +263,17 @@ func TestRomanize(t *testing.T) {
 }
 
 func TestWeekday(t *testing.T) {
-	input := []time.Weekday{time.Sunday, time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday}
-	want := []string{"일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"}
+	input := []time.Weekday{-1, time.Sunday, time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday}
+	want := []string{"", "일", "월", "화", "수", "목", "금", "토"}
+
+	for i, v := range input {
+		output := Weekday(v)
+		if output != want[i] {
+			t.Errorf("Weekday(%q) = %q; want %q", v, output, want[i])
+		}
+	}
+
+	want = []string{"요일", "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"}
 
 	for i, v := range input {
 		output := Weekday(v, true)
