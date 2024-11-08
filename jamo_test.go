@@ -19,14 +19,6 @@ func TestJamo_Equals(t *testing.T) {
 	}
 }
 
-func TestJamo_Rune(t *testing.T) {
-	input := Jamo('안')
-
-	if got := input.Rune(); got != '안' {
-		t.Errorf("Jamo.Rune() = %v, want %v", got, '안')
-	}
-}
-
 func TestJamo_String(t *testing.T) {
 	input := Jamo('안')
 

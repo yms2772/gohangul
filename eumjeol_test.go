@@ -21,7 +21,7 @@ func TestEumjeol_Equals(t *testing.T) {
 func TestEumjeol_String(t *testing.T) {
 	input := []Eumjeol{
 		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄴ')},
-		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄲ').toHangulChoseongSios()},
+		{Choseong: Jamo('ㅇ'), Jungseong: Jamo('ㅏ'), Jongseong: Jamo('ㄲ').toChoseong()},
 		{},
 	}
 	want := []string{"안", "앆", ""}
