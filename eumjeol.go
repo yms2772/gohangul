@@ -1,13 +1,17 @@
 package gohangul
 
+// Eumjeol 초성, 중성, 종성으로 이루어진 음절
 type Eumjeol struct {
 	Choseong  Jamo
 	Jungseong Jamo
 	Jongseong Jamo
 }
 
+// Empty 음절이 비어있는지 확인합니다.
 func (e Eumjeol) Empty() bool {
-	return e.Choseong.Empty() && e.Jungseong.Empty() && e.Jongseong.Empty()
+	return e.Choseong.Empty() &&
+		e.Jungseong.Empty() &&
+		e.Jongseong.Empty()
 }
 
 // Equals 음절이 같은지 확인합니다.
@@ -23,28 +27,23 @@ func (e Eumjeol) String() string {
 		return ""
 	}
 	if !e.Choseong.Empty() && e.Jungseong.Empty() && e.Jongseong.Empty() {
-		return e.Choseong.toHangulLetterSios().String()
+		return e.Choseong.toLetter().String()
 	}
 
 	result := Jamo(baseHangul)
 	if !e.Choseong.Empty() {
-		result += (e.Choseong.toHangulChoseongSios() - baseChoseong) * numJungseong * numJongseong
+		result += (e.Choseong.toChoseong() - baseChoseong) * numJungseong * numJongseong
 	}
 	if !e.Jungseong.Empty() {
-		result += (e.Jungseong.toHangulChoseongSios() - baseJungseong) * numJongseong
+		result += (e.Jungseong.toChoseong() - baseJungseong) * numJongseong
 	}
 	if !e.Jongseong.Empty() {
-		v, ok := choseongToJongseongMap[e.Jongseong]
-		if ok {
-			result += v - baseJongseong
-		} else {
-			result += e.Jongseong.toHangulChoseongSios().toJongseong() - baseJongseong
-		}
+		result += e.Jongseong.toChoseong().toJongseong() - baseJongseong
 	}
 	return result.String()
 }
 
 // isHangul 한글인지 확인합니다.
 func (e Eumjeol) isHangul() bool {
-	return e.Choseong.isHangul() || e.Jungseong.isHangul() || e.Jongseong.isHangul()
+	return e.Choseong.IsHangul() || e.Jungseong.IsHangul() || e.Jongseong.IsHangul()
 }

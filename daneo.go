@@ -2,6 +2,7 @@ package gohangul
 
 import "strings"
 
+// Daneo 단어: 음절의 집합
 type Daneo []Eumjeol
 
 // Equals 단어가 같은지 확인합니다.
@@ -18,28 +19,20 @@ func (d Daneo) Equals(target Daneo) bool {
 	return true
 }
 
+// String 단어를 문자열로 변환합니다.
 func (d Daneo) String() string {
 	var sb strings.Builder
+	sb.Grow(len(d) * 3)
 
 	for _, item := range d {
 		if !item.Choseong.Empty() {
-			sb.WriteRune(item.Choseong.toHangulLetterSios().Rune())
+			sb.WriteString(item.Choseong.toLetter().String())
 		}
 		if !item.Jungseong.Empty() {
-			v, ok := complexJungseongReversedMap[item.Jungseong]
-			if ok {
-				sb.WriteString(v)
-			} else {
-				sb.WriteRune(item.Jungseong.toHangulLetterSios().Rune())
-			}
+			sb.WriteString(item.Jungseong.complexJungseongToChoseong())
 		}
 		if !item.Jongseong.Empty() {
-			v, ok := complexJongseongReversedMap[item.Jongseong]
-			if ok {
-				sb.WriteString(v)
-			} else {
-				sb.WriteRune(item.Jongseong.toHangulLetterSios().Rune())
-			}
+			sb.WriteString(item.Jongseong.complexJongseongToChoseong())
 		}
 	}
 	return sb.String()
@@ -48,6 +41,7 @@ func (d Daneo) String() string {
 // Assemble 단어를 조합합니다.
 func (d Daneo) Assemble() string {
 	var sb strings.Builder
+	sb.Grow(len(d) * 3)
 
 	for _, item := range d {
 		sb.WriteString(item.String())
@@ -73,9 +67,10 @@ func (d Daneo) Each(f func(int, Eumjeol)) {
 // GetChoseong 단어에서 초성만 분리합니다.
 func (d Daneo) GetChoseong() string {
 	var sb strings.Builder
+	sb.Grow(len(d) * 3)
 
 	for i := range d {
-		sb.WriteString(d[i].Choseong.toHangulLetterSios().String())
+		sb.WriteString(d[i].Choseong.toLetter().String())
 	}
 	return sb.String()
 }

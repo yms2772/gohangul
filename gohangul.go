@@ -18,8 +18,8 @@ const (
 )
 
 var (
-	// Hangul Choseong Sios -> Hangul Letter Sios
-	choseongToLetterSiosMap = map[Jamo]Jamo{
+	// Hangul Choseong -> Hangul Letter
+	toLetterMap = map[Jamo]Jamo{
 		0x1100: 0x3131, // ㄱ (U+1100) -> ㄱ (U+3131)
 		0x1101: 0x3132, // ㄲ (U+1101) -> ㄲ (U+3132)
 		0x1102: 0x3134, // ㄴ (U+1102) -> ㄴ (U+3134)
@@ -89,8 +89,24 @@ var (
 		0x11C2: 0x314E, // ㅎ (U+11C2) -> ㅎ (U+314E)
 	}
 
-	// Hangul Letter Sios -> Hangul Choseong Sios
-	letterToChoseongSiosMap = map[Jamo]Jamo{
+	// Hangul Letter -> Hangul Choseong
+	toChoseongMap = map[Jamo]Jamo{
+		0x11A8: 0x1100, // ㄱ (U+11A8) -> ㄱ (U+1100)
+		0x11A9: 0x1101, // ㄲ (U+11A9) -> ㄱ (U+1101)
+		0x11AB: 0x1102, // ㄴ (U+11AB) -> ㄱ (U+1102)
+		0x11AC: 0x1103, // ㄷ (U+11AC) -> ㄱ (U+1103)
+		0x11AF: 0x1105, // ㄹ (U+11AF) -> ㄱ (U+1105)
+		0x11B7: 0x1106, // ㅁ (U+11B7) -> ㄱ (U+1106)
+		0x11B8: 0x1107, // ㅂ (U+11B8) -> ㄱ (U+1107)
+		0x11BA: 0x1109, // ㅅ (U+11BA) -> ㄱ (U+1109)
+		0x11BB: 0x110A, // ㅆ (U+11BB) -> ㄱ (U+110A)
+		0x11BC: 0x110B, // ㅇ (U+11BC) -> ㄱ (U+110B)
+		0x11BD: 0x110C, // ㅈ (U+11BD) -> ㄱ (U+110C)
+		0x11BE: 0x110E, // ㅊ (U+11BE) -> ㄱ (U+110E)
+		0x11BF: 0x110F, // ㅋ (U+11BF) -> ㄱ (U+110F)
+		0x11C0: 0x1110, // ㅌ (U+11C0) -> ㄱ (U+1110)
+		0x11C1: 0x1111, // ㅍ (U+11C1) -> ㄱ (U+1111)
+		0x11C2: 0x1112, // ㅎ (U+11C2) -> ㄱ (U+1112)
 		0x3131: 0x1100, // ㄱ (U+3131) -> ㄱ (U+1100)
 		0x3132: 0x1101, // ㄲ (U+3132) -> ㄲ (U+1101)
 		0x3133: 0x11AA, // ㄳ (U+3133) -> ㄳ (U+11AA)
@@ -145,7 +161,7 @@ var (
 	}
 
 	// 초성 -> 종성
-	choseongToJongseongMap = map[Jamo]Jamo{
+	toJongseongMap = map[Jamo]Jamo{
 		0x1100: 0x11A8, // ㄱ
 		0x1101: 0x11A9, // ㄲ
 		0x1102: 0x11AB, // ㄴ
@@ -162,26 +178,6 @@ var (
 		0x1110: 0x11C0, // ㅌ
 		0x1111: 0x11C1, // ㅍ
 		0x1112: 0x11C2, // ㅎ
-	}
-
-	// 종성 -> 초성
-	jongseongToChoseong = map[Jamo]Jamo{
-		0x11A8: 0x1100, // ㄱ
-		0x11A9: 0x1101, // ㄲ
-		0x11AB: 0x1102, // ㄴ
-		0x11AC: 0x1103, // ㄷ
-		0x11AF: 0x1105, // ㄹ
-		0x11B7: 0x1106, // ㅁ
-		0x11B8: 0x1107, // ㅂ
-		0x11BA: 0x1109, // ㅅ
-		0x11BB: 0x110A, // ㅆ
-		0x11BC: 0x110B, // ㅇ
-		0x11BD: 0x110C, // ㅈ
-		0x11BE: 0x110E, // ㅊ
-		0x11BF: 0x110F, // ㅋ
-		0x11C0: 0x1110, // ㅌ
-		0x11C1: 0x1111, // ㅍ
-		0x11C2: 0x1112, // ㅎ
 	}
 
 	// 복합 초성 -> 중성
@@ -419,6 +415,7 @@ func GetChoseong(word string) string {
 // NumberToHangul 숫자를 한글로 변환합니다.
 func NumberToHangul(number string) string {
 	var sb strings.Builder
+	sb.Grow(len(number))
 
 	for _, ch := range strings.TrimSpace(number) {
 		if (ch >= '0' && ch <= '9') || ch == '.' {
@@ -429,6 +426,7 @@ func NumberToHangul(number string) string {
 	fields := strings.Split(sb.String(), ".")
 
 	sb.Reset()
+	sb.Grow(len(fields[0]))
 
 	for i, ch := range fields[0] {
 		digitNumber := (len(fields[0]) - i - 1) % len(digitsHangul)
@@ -448,6 +446,7 @@ func NumberToHangul(number string) string {
 
 	if len(fields) > 1 {
 		sb.WriteString("점")
+
 		for _, ch := range fields[1] {
 			sb.WriteString(numberHangul[ch])
 		}
@@ -585,42 +584,39 @@ func Josa(word, josaType string) string {
 func Assemble(str string) string {
 	result := make(Daneo, 0, len(str))
 	index := -1
-
 	eumjeolList := Disassemble(str)
 
-	for _, eumjeol := range eumjeolList {
-		if (eumjeol.isHangul()) && index >= 0 {
+	for _, e := range eumjeolList {
+		if (e.isHangul()) && index >= 0 {
 			if !result[index].Choseong.Empty() && result[index].Jungseong.Empty() &&
-				eumjeol.Choseong.Empty() && !eumjeol.Jungseong.Empty() && eumjeol.Jongseong.Empty() {
-				result[index].Jungseong = eumjeol.Jungseong
+				e.Choseong.Empty() && !e.Jungseong.Empty() && e.Jongseong.Empty() {
+				result[index].Jungseong = e.Jungseong
 				continue
 			}
 			if !result[index].Jongseong.Empty() &&
-				eumjeol.Choseong.Empty() && !eumjeol.Jungseong.Empty() && eumjeol.Jongseong.Empty() {
-				eumjeol.Choseong = result[index].Jongseong.toChoseong()
+				e.Choseong.Empty() && !e.Jungseong.Empty() && e.Jongseong.Empty() {
+				e.Choseong = result[index].Jongseong.toChoseong()
 				result[index].Jongseong = 0
 				index++
-				result = append(result, eumjeol)
+				result = append(result, e)
 				continue
 			}
 			if !result[index].Choseong.Empty() && !result[index].Jungseong.Empty() && result[index].Jongseong.Empty() &&
-				!eumjeol.Choseong.Empty() && eumjeol.Jungseong.Empty() && eumjeol.Jongseong.Empty() {
-				result[index].Jongseong = eumjeol.Choseong.toJongseong()
+				!e.Choseong.Empty() && e.Jungseong.Empty() && e.Jongseong.Empty() {
+				result[index].Jongseong = e.Choseong.toJongseong()
 				continue
 			}
 			if !result[index].Choseong.Empty() && !result[index].Jungseong.Empty() && result[index].Jongseong.Empty() &&
-				eumjeol.Choseong.Empty() && !eumjeol.Jungseong.Empty() && eumjeol.Jongseong.Empty() {
-				cplx := result[index].Jungseong.toHangulLetterSios().toChoseong().String() +
-					eumjeol.Jungseong.toHangulLetterSios().String()
+				e.Choseong.Empty() && !e.Jungseong.Empty() && e.Jongseong.Empty() {
+				cplx := result[index].Jungseong.toLetter().String() + e.Jungseong.toLetter().String()
 				if v, ok := complexJungseongMap[cplx]; ok {
 					result[index].Jungseong = v
 					continue
 				}
 			}
 			if !result[index].Choseong.Empty() && !result[index].Jungseong.Empty() && !result[index].Jongseong.Empty() &&
-				!eumjeol.Choseong.Empty() && eumjeol.Jungseong.Empty() && eumjeol.Jongseong.Empty() {
-				cplx := result[index].Jongseong.toHangulLetterSios().toChoseong().String() +
-					eumjeol.Choseong.toHangulLetterSios().String()
+				!e.Choseong.Empty() && e.Jungseong.Empty() && e.Jongseong.Empty() {
+				cplx := result[index].Jongseong.toLetter().String() + e.Choseong.toLetter().String()
 				if v, ok := complexJongseongMap[cplx]; ok {
 					result[index].Jongseong = v
 					continue
@@ -629,7 +625,7 @@ func Assemble(str string) string {
 		}
 
 		index++
-		result = append(result, eumjeol)
+		result = append(result, e)
 	}
 	return result.Assemble()
 }
@@ -660,8 +656,7 @@ func CanBeJungseong(character string) bool {
 		return (eumjeolList[0].Jungseong >= baseJungseong && eumjeolList[0].Jungseong < baseJungseong+numJungseong) &&
 			(eumjeolList[0].Choseong.Empty() && eumjeolList[0].Jongseong.Empty())
 	case 2:
-		cplx := eumjeolList[0].Jungseong.toHangulLetterSios().toChoseong().String() +
-			eumjeolList[1].Jungseong.toHangulLetterSios().String()
+		cplx := eumjeolList[0].Jungseong.toLetter().String() + eumjeolList[1].Jungseong.toLetter().String()
 		_, ok := complexJungseongMap[cplx]
 		return ok
 	}
@@ -680,8 +675,7 @@ func CanBeJongseong(character string) bool {
 		return (eumjeolList[0].Choseong.toJongseong() >= baseJongseong && eumjeolList[0].Choseong.toJongseong() < baseJongseong+numJongseong) &&
 			(eumjeolList[0].Jungseong.Empty() && eumjeolList[0].Jongseong.Empty())
 	case 2:
-		cplx := eumjeolList[0].Choseong.toHangulLetterSios().toChoseong().String() +
-			eumjeolList[1].Choseong.toHangulLetterSios().String()
+		cplx := eumjeolList[0].Choseong.toLetter().String() + eumjeolList[1].Choseong.toLetter().String()
 		_, ok := complexJongseongMap[cplx]
 		return ok
 	}
@@ -701,7 +695,7 @@ func CombineVowels(vowel1, vowel2 string) string {
 	cplx := vowel1 + vowel2
 	v, ok := complexJungseongMap[cplx]
 	if ok {
-		return v.toHangulLetterSios().String()
+		return v.toLetter().String()
 	}
 	return cplx
 }
@@ -721,32 +715,30 @@ func Weekday(weekday time.Weekday, full ...bool) string {
 
 // Disassemble 문자열을 받아서 분해하여 Daneo 로 반환합니다.
 func Disassemble(str string) Daneo {
-	result := make(Daneo, 0, utf8.RuneCountInString(str))
+	result := make(Daneo, utf8.RuneCountInString(str))
+	i := -1
 
 	for _, ch := range str {
-		var eumjeol Eumjeol
+		i++
 
 		if ch >= baseHangul && ch <= baseHangul+numChoseong*numJungseong*numJongseong-1 {
 			ch -= baseHangul
 			cho := ch / (numJungseong * numJongseong)
 			jung := (ch % (numJungseong * numJongseong)) / numJongseong
 			jong := ch % numJongseong
-
-			eumjeol.Choseong = Jamo(baseChoseong + cho).toHangulChoseongSios()
-			eumjeol.Jungseong = Jamo(baseJungseong + jung).toHangulChoseongSios()
+			result[i].Choseong = Jamo(baseChoseong + cho).toChoseong()
+			result[i].Jungseong = Jamo(baseJungseong + jung).toChoseong()
 			if jong != 0 {
-				eumjeol.Jongseong = Jamo(baseJongseong + jong).toHangulChoseongSios()
+				result[i].Jongseong = Jamo(baseJongseong + jong).toChoseong()
 			}
 		} else {
-			j := Jamo(ch).toHangulChoseongSios()
+			j := Jamo(ch).toChoseong()
 			if j >= baseJungseong && j <= baseJungseong+numJungseong {
-				eumjeol.Jungseong = j
+				result[i].Jungseong = j
 			} else {
-				eumjeol.Choseong = j
+				result[i].Choseong = j
 			}
 		}
-
-		result = append(result, eumjeol)
 	}
 	return result
 }
@@ -754,16 +746,19 @@ func Disassemble(str string) Daneo {
 // Romanize 로마자로 변환합니다.
 func Romanize(str string) string {
 	eumjeolList := Disassemble(str)
-	if len(eumjeolList) == 0 {
-		return ""
-	}
-
 	var sb strings.Builder
+	sb.Grow(len(eumjeolList) * 3)
 
-	for _, eumjeol := range eumjeolList {
-		sb.WriteString(choseongRomaja[eumjeol.Choseong.toHangulLetterSios().String()])
-		sb.WriteString(jungseongRomaja[eumjeol.Jungseong.toHangulLetterSios().String()])
-		sb.WriteString(jongseongRomaja[eumjeol.Jongseong.toHangulLetterSios().String()])
+	for _, e := range eumjeolList {
+		if !e.Choseong.Empty() {
+			sb.WriteString(choseongRomaja[e.Choseong.toLetter().String()])
+		}
+		if !e.Jungseong.Empty() {
+			sb.WriteString(jungseongRomaja[e.Jungseong.toLetter().String()])
+		}
+		if !e.Jongseong.Empty() {
+			sb.WriteString(jongseongRomaja[e.Jongseong.toLetter().String()])
+		}
 	}
 	return sb.String()
 }
