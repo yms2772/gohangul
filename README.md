@@ -46,6 +46,7 @@ func main() {
 	fmt.Println(item.At(0).Jungseong) // ㅏ
 	fmt.Println(item.At(0).Jongseong) // ㄴ
 	fmt.Println(item.String())        // ㅇㅏㄴㄴㅕㅇㅎㅏㅅㅓㅣㅇㅛ
+	fmt.Println(item.Assemble())      // 안녕하세요
 }
 
 ```
@@ -102,11 +103,11 @@ func main() {
 ## 벤치마크
 ```shell
 BenchmarkDisassemble
-BenchmarkDisassemble-10    	 8232724	       140.8 ns/op
+BenchmarkDisassemble-10    	 9122798	       128.0 ns/op
 BenchmarkAssemble
-BenchmarkAssemble-10       	 7353751	       162.9 ns/op
+BenchmarkAssemble-10       	 7166037	       162.8 ns/op
 BenchmarkRomanize
-BenchmarkRomanize-10       	 2557101	       467.8 ns/op
+BenchmarkRomanize-10       	 3180787	       372.6 ns/op
 ```
 
 ## 라이센스
