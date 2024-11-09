@@ -18,9 +18,6 @@ func (j Jamo) Equals(target Jamo) bool {
 
 // String 자모를 문자열로 변환합니다.
 func (j Jamo) String() string {
-	if j.Empty() {
-		return ""
-	}
 	return string(j)
 }
 
