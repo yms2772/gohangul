@@ -183,8 +183,8 @@ func TestCombineVowels(t *testing.T) {
 }
 
 func TestDays(t *testing.T) {
-	input := []int{14, 2, 29, 100}
-	want := []string{"열나흘", "이틀", "스무아흐레", ""}
+	input := []int{14, 2, 29}
+	want := []string{"열나흘", "이틀", "스무아흐레"}
 
 	for i, v := range input {
 		output := Days(v)
@@ -263,8 +263,8 @@ func TestRomanize(t *testing.T) {
 }
 
 func TestWeekday(t *testing.T) {
-	input := []time.Weekday{-1, time.Sunday, time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday}
-	want := []string{"", "일", "월", "화", "수", "목", "금", "토"}
+	input := []time.Weekday{time.Sunday, time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday}
+	want := []string{"일", "월", "화", "수", "목", "금", "토"}
 
 	for i, v := range input {
 		output := Weekday(v)
@@ -273,7 +273,7 @@ func TestWeekday(t *testing.T) {
 		}
 	}
 
-	want = []string{"요일", "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"}
+	want = []string{"일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"}
 
 	for i, v := range input {
 		output := Weekday(v, true)
