@@ -352,58 +352,58 @@ var (
 		"정", "재", "극", "항하사", "아승기",
 		"나유타", "불가사의", "무량대수",
 	}
-	numberHangul = map[int32]string{
-		'0': "영",
-		'1': "일",
-		'2': "이",
-		'3': "삼",
-		'4': "사",
-		'5': "오",
-		'6': "육",
-		'7': "칠",
-		'8': "팔",
-		'9': "구",
+	numberHanguls = [...]string{
+		"영",
+		"일",
+		"이",
+		"삼",
+		"사",
+		"오",
+		"육",
+		"칠",
+		"팔",
+		"구",
 	}
-	daysHangul = map[int]string{
-		1:  "하루",
-		2:  "이틀",
-		3:  "사흘",
-		4:  "나흘",
-		5:  "닷새",
-		6:  "엿새",
-		7:  "이레",
-		8:  "여드레",
-		9:  "아흐레",
-		10: "열흘",
-		11: "열하루",
-		12: "열이틀",
-		13: "열사흘",
-		14: "열나흘",
-		15: "보름",
-		16: "열엿새",
-		17: "열이레",
-		18: "열여드레",
-		19: "열아흐레",
-		20: "스무날",
-		21: "스무하루",
-		22: "스무이틀",
-		23: "스무사흘",
-		24: "스무나흘",
-		25: "스무닷새",
-		26: "스무엿새",
-		27: "스무이레",
-		28: "스무여드레",
-		29: "스무아흐레",
-		30: "서른날",
+	daysHanguls = [...]string{
+		"하루",
+		"이틀",
+		"사흘",
+		"나흘",
+		"닷새",
+		"엿새",
+		"이레",
+		"여드레",
+		"아흐레",
+		"열흘",
+		"열하루",
+		"열이틀",
+		"열사흘",
+		"열나흘",
+		"보름",
+		"열엿새",
+		"열이레",
+		"열여드레",
+		"열아흐레",
+		"스무날",
+		"스무하루",
+		"스무이틀",
+		"스무사흘",
+		"스무나흘",
+		"스무닷새",
+		"스무엿새",
+		"스무이레",
+		"스무여드레",
+		"스무아흐레",
+		"서른날",
 	}
-	weekdayHangul = map[time.Weekday]string{
-		time.Sunday:    "일",
-		time.Monday:    "월",
-		time.Tuesday:   "화",
-		time.Wednesday: "수",
-		time.Thursday:  "목",
-		time.Friday:    "금",
-		time.Saturday:  "토",
+	weekdayHanguls = [...]string{
+		"일",
+		"월",
+		"화",
+		"수",
+		"목",
+		"금",
+		"토",
 	}
 )
 
@@ -436,7 +436,7 @@ func NumberToHangul(number string) string {
 		}
 
 		if ch != '0' {
-			sb.WriteString(numberHangul[ch])
+			sb.WriteString(numberHanguls[ch-'0'])
 			sb.WriteString(digitsHangul[digitNumber])
 		}
 		if digitNumber == 0 {
@@ -448,7 +448,7 @@ func NumberToHangul(number string) string {
 		sb.WriteString("점")
 
 		for _, ch := range fields[1] {
-			sb.WriteString(numberHangul[ch])
+			sb.WriteString(numberHanguls[ch-'0'])
 		}
 	}
 	return sb.String()
@@ -702,15 +702,15 @@ func CombineVowels(vowel1, vowel2 string) string {
 
 // Days 일자를 한글로 변환합니다.
 func Days(day int) string {
-	return daysHangul[day]
+	return daysHanguls[day-1]
 }
 
 // Weekday 요일을 한글로 변환합니다.
 func Weekday(weekday time.Weekday, full ...bool) string {
 	if len(full) > 0 && full[0] {
-		return weekdayHangul[weekday] + "요일"
+		return weekdayHanguls[weekday] + "요일"
 	}
-	return weekdayHangul[weekday]
+	return weekdayHanguls[weekday]
 }
 
 // Disassemble 문자열을 받아서 분해하여 Daneo 로 반환합니다.
