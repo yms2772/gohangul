@@ -23,6 +23,78 @@ func BenchmarkRomanize(b *testing.B) {
 	}
 }
 
+func BenchmarkCanBeChoseong(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CanBeChoseong("ㅇ")
+	}
+}
+
+func BenchmarkCanBeJungseong(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CanBeJungseong("ㅡ")
+	}
+}
+
+func BenchmarkCanBeJongseong(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CanBeJongseong("ㅇ")
+	}
+}
+
+func BenchmarkCombineCharacter(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CombineCharacter("ㄱ", "ㅏ")
+	}
+}
+
+func BenchmarkCombineVowels(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CombineVowels("ㅏ", "ㅓ")
+	}
+}
+
+func BenchmarkDays(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Days(14)
+	}
+}
+
+func BenchmarkGetChoseong(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		GetChoseong("라면")
+	}
+}
+
+func BenchmarkHasBatchim(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		HasBatchim("갂")
+	}
+}
+
+func BenchmarkJosa(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Josa("사과", "이/가")
+	}
+}
+
+func BenchmarkJosaPick(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		JosaPick("사과", "이/가")
+	}
+}
+
+func BenchmarkNumberToHangul(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		NumberToHangul("1234567890")
+	}
+}
+
+func BenchmarkWeekday(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Weekday(time.Sunday)
+	}
+}
+
 func TestAssemble(t *testing.T) {
 	input := "ㅇㅏㄴㄴㅕㅇㅎㅏㅅㅓㅣㅇㅛ. ㅂㅗㄱㅎㅏㅂ ㅈㅜㅇㅅㅓㅇ (ㅇㅡㅣㅅㅏ, ㅇㅗㅣㄱㅗㅏ) ㅂㅗㄱㅎㅏㅂ ㅈㅗㅇㅅㅓㅇ (ㅅㅏㄹㅁ, ㄷㅏㄹㄱ)"
 	want := "안녕하세요. 복합 중성 (의사, 외과) 복합 종성 (삶, 닭)"

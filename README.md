@@ -103,11 +103,35 @@ func main() {
 ## 벤치마크
 ```shell
 BenchmarkDisassemble
-BenchmarkDisassemble-10    	 9122798	       128.0 ns/op
+BenchmarkDisassemble-10         	 8318858	       127.8 ns/op
 BenchmarkAssemble
-BenchmarkAssemble-10       	 7166037	       162.8 ns/op
+BenchmarkAssemble-10            	 7490484	       158.3 ns/op
 BenchmarkRomanize
-BenchmarkRomanize-10       	 3180787	       372.6 ns/op
+BenchmarkRomanize-10            	 3312685	       363.4 ns/op
+BenchmarkCanBeChoseong
+BenchmarkCanBeChoseong-10       	50878087	        23.46 ns/op
+BenchmarkCanBeJungseong
+BenchmarkCanBeJungseong-10      	42416503	        28.31 ns/op
+BenchmarkCanBeJongseong
+BenchmarkCanBeJongseong-10      	34962742	        34.45 ns/op
+BenchmarkCombineCharacter
+BenchmarkCombineCharacter-10    	 9039068	       133.4 ns/op
+BenchmarkCombineVowels
+BenchmarkCombineVowels-10       	60781804	        19.79 ns/op
+BenchmarkDays
+BenchmarkDays-10                	1000000000	         0.3196 ns/op
+BenchmarkGetChoseong
+BenchmarkGetChoseong-10         	11115223	       108.2 ns/op
+BenchmarkHasBatchim
+BenchmarkHasBatchim-10          	193764027	         6.183 ns/op
+BenchmarkJosa
+BenchmarkJosa-10                	61659937	        19.47 ns/op
+BenchmarkJosaPick
+BenchmarkJosaPick-10            	148084624	         8.089 ns/op
+BenchmarkNumberToHangul
+BenchmarkNumberToHangul-10      	 5481848	       218.8 ns/op
+BenchmarkWeekday
+BenchmarkWeekday-10             	1000000000	         0.3200 ns/op
 ```
 
 ## 라이센스
